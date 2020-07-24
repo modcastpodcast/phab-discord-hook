@@ -12,10 +12,10 @@ API_BASE = environ.get("API_BASE")
 
 
 def handle_task(data):
-    task_transactions = httpx.post(f"{API_BASE}/transaction.search", json={
+    task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
-    }).json()
+    }).json()["result"]
 
     httpx.post(WEBHOOK_URL, json={
       "content": str(task_transactions)
@@ -24,14 +24,14 @@ def handle_task(data):
     new_transactions = [t["phid"] for t in task_transactions["data"] if t["type"] == "create"]
     hook_transactions = [t["phid"] for t in data["transactions"]]
 
-    task_data = httpx.post(f"{API_BASE}/maniphest.query", json={
+    task_data = httpx.post(f"{API_BASE}/maniphest.query", data={
         "api.token": API_TOKEN,
         "phids": [
             data["object"]["phid"]
         ]
     }).json()["result"][data["object"]["phid"]]
 
-    author_data = httpx.post(f"{API_BASE}/user.query", json={
+    author_data = httpx.post(f"{API_BASE}/user.query", data={
         "api.token": API_TOKEN,
         "phids": [
             task_data["authorPHID"]
