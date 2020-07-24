@@ -1,11 +1,18 @@
+from os import environ
+
 from flask import Flask, request
+import httpx
 
 app = Flask(__name__)
+
+WEBHOOK_URL = environ.get("WEBHOOK_URL")
 
 
 @app.route("/", methods=["POST"])
 def hello():
-    print(request.get_json())
+    httpx.post(WEBHOOK_URL, json={
+        "content": str(request.get_json())
+    })
     return "okay"
 
 
