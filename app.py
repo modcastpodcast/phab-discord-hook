@@ -47,7 +47,7 @@ def handle_task(data):
                 "icon_url": author_data["image"]
               },
               "timestamp": datetime.utcnow().isoformat(),
-              "description": f"Task {task_data["objectName"]} opened with priority {task_data["priority"]}"
+              "description": f"Task {task_data['objectName']} opened with priority {task_data['priority']}"
             }
           ]
         })
