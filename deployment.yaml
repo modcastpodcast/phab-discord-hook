@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phab-discord-hook
+spec:
+  revisionHistoryLimit: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phab-discord-hook
+  template:
+    metadata:
+      labels:
+        app: phab-discord-hook
+    spec:
+      containers:
+        - name: phab-discord-hook
+          image: docker.pkg.github.com/modcastpodcast/phab-discord-hook/app
+          imagePullPolicy: "IfNotPresent"
+          envFrom:
+            - secretRef:
+                name: phab-discord-hook
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phab-discord-hook
+spec:
+  selector:
+    app: phab-discord-hook
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
