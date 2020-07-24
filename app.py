@@ -15,7 +15,7 @@ def handle_task(data):
     task_transactions = httpx.post(f"{API_BASE}/transaction.search", json={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
-    }).json()["result"]
+    }).json()
 
     httpx.post(WEBHOOK_URL, json={
       "content": str(task_transactions)
