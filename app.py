@@ -15,7 +15,7 @@ def handle_task(data):
     task_transactions = httpx.post(f"{API_BASE}/transaction.search", json={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
-    }).json()
+    }).json()["result"]
 
     new_transactions = [t["phid"] for t in task_transactions["data"] if t["type"] == "create"]
     hook_transactions = [t["phid"] for t in data["transactions"]]
@@ -25,14 +25,14 @@ def handle_task(data):
         "phids": [
             data["object"]["phid"]
         ]
-    }).json()[data["object"]["phid"]]
+    }).json()["result"][data["object"]["phid"]]
 
     author_data = httpx.post(f"{API_BASE}/user.query", json={
         "api.token": API_TOKEN,
         "phids": [
             task_data["authorPHID"]
         ]
-    }).json()["0"]
+    }).json()["result"]["0"]
 
     if any([new_transaction in hook_transactions for new_transaction in new_transactions]):
         httpx.post(WEBHOOK_URL, json={
