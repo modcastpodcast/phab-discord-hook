@@ -17,6 +17,10 @@ def handle_task(data):
         "objectIdentifier": data["object"]["phid"]
     }).json()["result"]
 
+    httpx.post(WEBHOOK_URL, json={
+      "content": str(task_transactions)
+    })
+
     new_transactions = [t["phid"] for t in task_transactions["data"] if t["type"] == "create"]
     hook_transactions = [t["phid"] for t in data["transactions"]]
 
