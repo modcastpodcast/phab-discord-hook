@@ -46,7 +46,7 @@ def handle_task(data):
 
     projects = [p["name"] for p in project_data.values()]
 
-    project_str = "**›› Projects**\n\n"
+    project_str = "**›› Projects**\n"
 
     for project in projects:
         project_str += f"• {project}\n"
