@@ -29,9 +29,7 @@ def handle_task(data):
 
     author_data = httpx.post(f"{API_BASE}/user.query", data={
         "api.token": API_TOKEN,
-        "phids": [
-            task_data["authorPHID"]
-        ]
+        "phids[0]": task_data["authorPHID"]
     }).json()["result"]["0"]
 
     if any([new_transaction in hook_transactions for new_transaction in new_transactions]):
