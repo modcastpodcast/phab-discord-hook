@@ -24,9 +24,7 @@ def handle_task(data):
 
     task_data = httpx.post(f"{API_BASE}/maniphest.query", data={
         "api.token": API_TOKEN,
-        "phids": [
-            data["object"]["phid"]
-        ]
+        "phids[0]": data["object"]["phid"]
     }).json()["result"][data["object"]["phid"]]
 
     author_data = httpx.post(f"{API_BASE}/user.query", data={
