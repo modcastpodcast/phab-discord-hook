@@ -32,6 +32,25 @@ def handle_task(data):
         "phids[0]": task_data["authorPHID"]
     }).json()["result"][0]
 
+    form_data = {}
+
+    for i, project_phid in enumerate(task_data["projectPHIDs"]):
+        form_data[f"phids[{i}]"] = project_phid
+
+    form_data["api.token"] = API_TOKEN
+
+    project_data = httpx.post(
+        f"{API_BASE}/project.query",
+        data=form_data
+    ).json()["result"]
+
+    projects = [p["name"] for p in project_data.values()]
+
+    project_str = "**›› Projects**\n\n"
+
+    for project in projects:
+        project_str += f"• {project}\n"
+
     if any([new_transaction in hook_transactions for new_transaction in new_transactions]):
         httpx.post(WEBHOOK_URL, json={
           "embeds": [
@@ -45,7 +64,7 @@ def handle_task(data):
                 "icon_url": author_data["image"]
               },
               "timestamp": datetime.utcnow().isoformat(),
-              "description": f"Task {task_data['objectName']} opened with priority {task_data['priority']}"
+              "description": f"**›› Task ID**\n{task_data['objectName']}\n\n**›› Priority**\n{task_data['priority']}\n\n{project_str}"
             }
           ]
         })
