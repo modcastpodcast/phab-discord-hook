@@ -42,7 +42,7 @@ def handle_task(data):
     project_data = httpx.post(
         f"{API_BASE}/project.query",
         data=form_data
-    ).json()["result"]
+    ).json()["result"]["data"]
 
     projects = [p["name"] for p in project_data.values()]
 
