@@ -17,7 +17,7 @@ def handle_task(data):
         "objectIdentifier": data["object"]["phid"]
     })
 
-    task_transactions = task_transactions.json()["results"]
+    task_transactions = task_transactions.json()["result"]
 
     new_transactions = [t["phid"] for t in task_transactions["data"] if t["type"] == "create"]
     hook_transactions = [t["phid"] for t in data["transactions"]]
