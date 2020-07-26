@@ -6,7 +6,7 @@ import httpx
 
 app = Flask(__name__)
 
-PHABRICATOR_WEBHOOK_URL = environ.get("PHARICATOR_WEBHOOK_URL")
+PHABRICATOR_WEBHOOK_URL = environ.get("PHABRICATOR_WEBHOOK_URL")
 GHOST_WEBHOOK_URL = environ.get("GHOST_WEBHOOK_URL")
 
 API_TOKEN = environ.get("API_TOKEN")
@@ -113,7 +113,7 @@ def ghost():
       "avatar_url": "https://media.discordapp.net/attachments/734544797230039061/735869372639477841/sicon.png?width=1258&height=1258"
     }
 
-    httpx.post(PHABRICATOR_WEBHOOK_URL, json=webhook_data)
+    httpx.post(GHOST_WEBHOOK_URL, json=webhook_data)
 
     return "okay"
 
