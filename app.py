@@ -111,7 +111,9 @@ def ghost():
       ]
     }
 
-    httpx.post(GHOST_WEBHOOK_URL, json=webhook_data)
+    httpx.post(PHABRICATOR_WEBHOOK_URL, json={
+        "content": str(webhook_data)
+    })
 
     return "okay"
 
