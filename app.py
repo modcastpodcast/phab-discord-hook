@@ -6,10 +6,11 @@ import httpx
 
 app = Flask(__name__)
 
-PHABRICATOR_WEBHOOK_URL = environ.get("WEBHOOK_URL")
+PHABRICATOR_WEBHOOK_URL = environ.get("PHARICATOR_WEBHOOK_URL")
+GHOST_WEBHOOK_URL = environ.get("GHOST_WEBHOOK_URL")
+
 API_TOKEN = environ.get("API_TOKEN")
 API_BASE = environ.get("API_BASE")
-
 
 
 def handle_task(data):
