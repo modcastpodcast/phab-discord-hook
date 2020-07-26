@@ -108,9 +108,7 @@ def ghost():
             "icon_url": data['primary_author']['profile_image']
           }
         }
-      ],
-      "username": "Modcast Blog",
-      "avatar_url": "https://media.discordapp.net/attachments/734544797230039061/735869372639477841/sicon.png?width=1258&height=1258"
+      ]
     }
 
     httpx.post(GHOST_WEBHOOK_URL, json=webhook_data)
