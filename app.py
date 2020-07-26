@@ -104,7 +104,7 @@ def ghost():
           },
           "author": {
             "name": data['primary_author']['name'],
-            "url": "https://modcast.network/author/" + data['primary_author']['slug'],
+            "url": "https://modcast.network/author/panley", # + data['primary_author']['slug'],
             "icon_url": data['primary_author']['profile_image']
           }
         }
