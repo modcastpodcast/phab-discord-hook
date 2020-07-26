@@ -98,13 +98,13 @@ def ghost():
           "description": data['custom_excerpt'],
           "url": data['url'],
           "color": 16711790,
-          "timestamp": datetime.now().isoformat(),
+          "timestamp": datetime.utcnow().isoformat(),
           "image": {
             "url": data['feature_image']
           },
           "author": {
             "name": data['primary_author']['name'],
-            "url": "https://modcast.network/author/panley", # + data['primary_author']['slug'],
+            "url": "https://modcast.network/author/" + data['primary_author']['slug'],
             "icon_url": data['primary_author']['profile_image']
           }
         }
