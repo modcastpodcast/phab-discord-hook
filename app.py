@@ -91,12 +91,17 @@ def ghost():
     """
     data = request.get_json()["post"]["current"]
 
+    url = data['url']
+
+    url += "?utm_medium=social&utm_source=discord_announcement"
+    url += f"&utm_campaign={data['slug']}"
+
     webhook_data = {
       "embeds": [
         {
-          "title": f"📣 {data['title']}",
+          "title": f":mega: {data['title']}",
           "description": data['custom_excerpt'],
-          "url": data['url'],
+          "url": url,
           "color": 16711790,
           "timestamp": datetime.utcnow().isoformat(),
           "image": {
