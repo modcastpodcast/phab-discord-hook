@@ -6,9 +6,10 @@ import httpx
 
 app = Flask(__name__)
 
-WEBHOOK_URL = environ.get("WEBHOOK_URL")
+PHABRICATOR_WEBHOOK_URL = environ.get("WEBHOOK_URL")
 API_TOKEN = environ.get("API_TOKEN")
 API_BASE = environ.get("API_BASE")
+
 
 
 def handle_task(data):
@@ -51,8 +52,10 @@ def handle_task(data):
     for project in projects:
         project_str += f"• {project}\n"
 
-    if any([new_transaction in hook_transactions for new_transaction in new_transactions]):
-        httpx.post(WEBHOOK_URL, json={
+    if any(
+        [new_transaction in hook_transactions for new_transaction in new_transactions]
+    ):
+        httpx.post(PHABRICATOR_WEBHOOK_URL, json={
           "embeds": [
             {
               "title": task_data["title"],
@@ -70,13 +73,48 @@ def handle_task(data):
         })
 
 @app.route("/", methods=["POST"])
-def hello():
+def phabricator():
+    """
+    Handle data ingested from Phabricator.
+    """
     data = request.get_json()
     if data.get("object", {}).get("type") == "TASK":
         handle_task(data)
 
     return "okay"
 
+@app.route("/ghost/publish", methods=["POST"])
+def ghost():
+    """
+    Handle publish data ingested from Ghost.
+    """
+    data = request.get_json()["post"]["current"]
+
+    webhook_data = {
+      "embeds": [
+        {
+          "title": f"📣 {data['title']}",
+          "description": data['custom_excerpt'],
+          "url": data['url'],
+          "color": 16711790,
+          "timestamp": datetime.now().isoformat(),
+          "image": {
+            "url": data['feature_image']
+          },
+          "author": {
+            "name": data['primary_author']['name'],
+            "url": data['primary_author']['url'],
+            "icon_url": data['primary_author']['profile_image']
+          }
+        }
+      ],
+      "username": "Modcast Blog",
+      "avatar_url": "https://media.discordapp.net/attachments/734544797230039061/735869372639477841/sicon.png?width=1258&height=1258"
+    }
+
+    httpx.post(PHABRICATOR_WEBHOOK_URL, json=webhook_data)
+
+    return "okay"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
