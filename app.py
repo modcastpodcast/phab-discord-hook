@@ -93,7 +93,7 @@ def ghost():
 
     url = data['url']
 
-    url += "?utm_medium=social&utm_source=discord_announcement"
+    url += "?utm_medium=discord&utm_source=announcement"
     url += f"&utm_campaign={data['slug']}"
 
     webhook_data = {
