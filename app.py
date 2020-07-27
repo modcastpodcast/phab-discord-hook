@@ -64,8 +64,10 @@ def handle_task(data):
               "url": task_data["uri"],
               "author": {
                 "name": author_data["realName"],
-                "url": author_data["uri"],
-                "icon_url": author_data["image"]
+                "url": author_data["uri"]
+              },
+              "thumbnail": {
+                "url": author_data["image"]
               },
               "timestamp": datetime.utcnow().isoformat(),
               "description": f"**›› Task ID**\n{task_data['objectName']}\n\n**›› Priority**\n{task_data['priority']}\n\n{project_str}"
