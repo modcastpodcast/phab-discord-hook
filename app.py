@@ -27,7 +27,7 @@ def check_for_assignments(data):
     if len(assignments) == 0:
         return
 
-    new_user = assignments[::-1][0]["new"]
+    new_user = assignments[::-1][0]["fields"]["new"]
 
     if not new_user:
         return
