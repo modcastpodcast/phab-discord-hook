@@ -14,8 +14,6 @@ API_BASE = environ.get("API_BASE")
 
 
 def handle_task(data):
-    print(data)
-
     task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
@@ -83,6 +81,7 @@ def phabricator():
     Handle data ingested from Phabricator.
     """
     data = request.get_json()
+    print(data)
     if data.get("object", {}).get("type") == "TASK":
         handle_task(data)
 
