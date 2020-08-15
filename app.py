@@ -1,3 +1,5 @@
+import base64
+import json
 from datetime import datetime
 from os import environ
 
@@ -11,6 +13,33 @@ GHOST_WEBHOOK_URL = environ.get("GHOST_WEBHOOK_URL")
 
 API_TOKEN = environ.get("API_TOKEN")
 API_BASE = environ.get("API_BASE")
+
+def check_for_assignments(data):
+    task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
+        "api.token": API_TOKEN,
+        "objectIdentifier": data["object"]["phid"]
+    }).json()["result"]["data"]
+
+    update_phids = [p["phid"] for p in data["transactions"]]
+    new_updates = [transaction for transaction in task_transactions if transaction["phid"] in update_phids]
+    assignments = [a for a in new_updates if a["type"] == "owner"]
+
+    if len(assignments) == 0:
+        return
+
+    new_user = assignments[::-1][0]["new"]
+
+    if not new_user:
+        return
+
+    with open("/phids.json") as phids:
+        mapping = json.load(phids)
+
+    for user in mapping:
+        if user["PHID"] = f"base64:type15:{base64.b64encode(new_user).decode()}":
+            return user["ID"]
+
+    return None
 
 
 def handle_task(data):
@@ -56,7 +85,9 @@ def handle_task(data):
     if any(
         [new_transaction in hook_transactions for new_transaction in new_transactions]
     ):
+        assignee = check_for_assignments(data)
         httpx.post(PHABRICATOR_WEBHOOK_URL, json={
+          "content": f"Assigned to: <@{assignee}>" if assignee else None,
           "embeds": [
             {
               "title": task_data["title"],
@@ -74,6 +105,10 @@ def handle_task(data):
             }
           ]
         })
+    elif (user := check_for_assignments(data)):
+        httpx.post(PHABRICATOR_WEBHOOK_URL, json={
+            "content": f"<@{user}>: You have been assigned to {task_data['objectName']}: *{task_data['title']}*"
+        })
 
 @app.route("/", methods=["POST"])
 def phabricator():
@@ -81,9 +116,6 @@ def phabricator():
     Handle data ingested from Phabricator.
     """
     data = request.get_json()
-    httpx.post(PHABRICATOR_WEBHOOK_URL, json={
-        "content": str(data)[0:1990]
-    })
     if data.get("object", {}).get("type") == "TASK":
         handle_task(data)
 
