@@ -32,7 +32,7 @@ def check_for_assignments(data):
     if not new_user:
         return
 
-    with open("/phids.json") as phids:
+    with open("/phids/phabricator_users.json") as phids:
         mapping = json.load(phids)
 
     for user in mapping:

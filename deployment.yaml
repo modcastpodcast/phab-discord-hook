@@ -19,7 +19,7 @@ spec:
           imagePullPolicy: "IfNotPresent"
           volumeMounts:
           - name: phids-to-discord
-            mountPath: /phids.json
+            mountPath: /phids
           envFrom:
             - secretRef:
                 name: phab-discord-hook
