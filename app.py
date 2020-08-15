@@ -81,7 +81,9 @@ def phabricator():
     Handle data ingested from Phabricator.
     """
     data = request.get_json()
-    print(data)
+    httpx.post(PHABRICATOR_WEBHOOK_URL, json={
+        "content": str(data)[0:1990]
+    })
     if data.get("object", {}).get("type") == "TASK":
         handle_task(data)
 
