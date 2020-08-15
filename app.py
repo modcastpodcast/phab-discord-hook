@@ -36,7 +36,7 @@ def check_for_assignments(data):
         mapping = json.load(phids)
 
     for user in mapping:
-        if user["PHID"] = f"base64:type15:{base64.b64encode(new_user).decode()}":
+        if user["PHID"] == f"base64:type15:{base64.b64encode(new_user).decode()}":
             return user["ID"]
 
     return None
