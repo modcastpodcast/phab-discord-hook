@@ -14,6 +14,9 @@ GHOST_WEBHOOK_URL = environ.get("GHOST_WEBHOOK_URL")
 API_TOKEN = environ.get("API_TOKEN")
 API_BASE = environ.get("API_BASE")
 
+VARNISH_SIGNALLER = environ.get("VARNISH_SIGNALLER")
+VARNISH_AUTH = environ.get("VARNISH_AUTH")
+
 def check_for_assignments(data):
     task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
         "api.token": API_TOKEN,
@@ -154,6 +157,10 @@ def ghost():
     }
 
     httpx.post(GHOST_WEBHOOK_URL, json=webhook_data)
+
+    httpx.request("BAN", VARNISH_SIGNALLER, headers={
+        "X-Ban-Auth": VARNISH_AUTH
+    })
 
     return "okay"
 
