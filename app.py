@@ -158,6 +158,11 @@ def ghost():
 
     httpx.post(GHOST_WEBHOOK_URL, json=webhook_data)
 
+
+    return "okay"
+
+@app.route("/ghost/rebuild", methods=["POST"])
+def rebuild_site():
     httpx.request("BAN", VARNISH_SIGNALLER, headers={
         "X-Ban-Auth": VARNISH_AUTH
     })
