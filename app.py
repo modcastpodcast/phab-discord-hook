@@ -17,8 +17,16 @@ API_BASE = environ.get("API_BASE")
 VARNISH_SIGNALLER = environ.get("VARNISH_SIGNALLER")
 VARNISH_AUTH = environ.get("VARNISH_AUTH")
 
+CLOUDFLARE_ACCESS_CLIENT_ID = environ.get("CLOUDFLARE_ACCESS_CLIENT_ID")
+CLOUDFLARE_ACCESS_CLIENT_SECRET = environ.get("CLOUDFLARE_ACCESS_CLIENT_SECRET")
+
+
 def check_for_assignments(data):
-    task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
+    task_transactions = httpx.post(f"{API_BASE}/transaction.search", headers={
+            "CF-Access-Client-ID": CLOUDFLARE_ACCESS_CLIENT_ID,
+            "CF-Access-Client-Secret": CLOUDFLARE_ACCESS_CLIENT_SECRET
+        },
+        data={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
     }).json()["result"]["data"]
@@ -46,7 +54,10 @@ def check_for_assignments(data):
 
 
 def handle_task(data):
-    task_transactions = httpx.post(f"{API_BASE}/transaction.search", data={
+    task_transactions = httpx.post(f"{API_BASE}/transaction.search", headers={
+            "CF-Access-Client-ID": CLOUDFLARE_ACCESS_CLIENT_ID,
+            "CF-Access-Client-Secret": CLOUDFLARE_ACCESS_CLIENT_SECRET
+        }, data={
         "api.token": API_TOKEN,
         "objectIdentifier": data["object"]["phid"]
     })
@@ -56,12 +67,19 @@ def handle_task(data):
     new_transactions = [t["phid"] for t in task_transactions["data"] if t["type"] == "create"]
     hook_transactions = [t["phid"] for t in data["transactions"]]
 
-    task_data = httpx.post(f"{API_BASE}/maniphest.query", data={
+    task_data = httpx.post(f"{API_BASE}/maniphest.query", headers={
+            "CF-Access-Client-ID": CLOUDFLARE_ACCESS_CLIENT_ID,
+            "CF-Access-Client-Secret": CLOUDFLARE_ACCESS_CLIENT_SECRET
+        },
+        data={
         "api.token": API_TOKEN,
         "phids[0]": data["object"]["phid"]
     }).json()["result"][data["object"]["phid"]]
 
-    author_data = httpx.post(f"{API_BASE}/user.query", data={
+    author_data = httpx.post(f"{API_BASE}/user.query",headers={
+            "CF-Access-Client-ID": CLOUDFLARE_ACCESS_CLIENT_ID,
+            "CF-Access-Client-Secret": CLOUDFLARE_ACCESS_CLIENT_SECRET
+        }, data={
         "api.token": API_TOKEN,
         "phids[0]": task_data["authorPHID"]
     }).json()["result"][0]
@@ -75,6 +93,10 @@ def handle_task(data):
 
     project_data = httpx.post(
         f"{API_BASE}/project.query",
+        headers={
+            "CF-Access-Client-ID": CLOUDFLARE_ACCESS_CLIENT_ID,
+            "CF-Access-Client-Secret": CLOUDFLARE_ACCESS_CLIENT_SECRET
+        },
         data=form_data
     ).json()["result"]["data"]
 
